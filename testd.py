@@ -23,17 +23,13 @@ class MyDaemon(Daemon):
   """Definition of daemon."""
   @staticmethod
   def run():
-    iniconf         = configparser.ConfigParser()
     inisection      = MYID
     home            = os.path.expanduser('~')
-    s               = iniconf.read(home + '/' + MYAPP + '/config.ini')
-    syslog_trace("Config file   : {0}".format(s), False, DEBUG)
-    syslog_trace("Options       : {0}".format(iniconf.items(inisection)), False, DEBUG)
-    reporttime      = iniconf.getint(inisection, "reporttime")
-    cycles          = iniconf.getint(inisection, "cycles")
-    samplespercycle = iniconf.getint(inisection, "samplespercycle")
-    flock           = iniconf.get(inisection, "lockfile")
-    fdata           = iniconf.get(inisection, "resultfile")
+    reporttime      = 60
+    cycles          = 1
+    samplespercycle = 1
+    flock           = "/tmp/lockfile"
+    fdata           = "/tmp/resultfile"
 
     samples         = samplespercycle * cycles      # total number of samples averaged
     sampletime      = reporttime/samplespercycle    # time [s] between samples
@@ -41,7 +37,7 @@ class MyDaemon(Daemon):
     data            = []                            # array for holding sampledata
 
     try:
-      hwdevice      = iniconf.get(inisection, NODE+".hwdevice")
+      hwdevice      = "/sys/devices/virtual/thermal/thermal_zone0/temp"
     except configparser.NoOptionError:  # no hwdevice
       syslog_trace(traceback.format_exc(), False, DEBUG)
       sys.exit(0)
