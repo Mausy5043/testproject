@@ -10,7 +10,7 @@ import syslog
 import time
 import traceback
 
-from mausy5043.libdaemon3 import Daemon
+from mausy5043libs.libdaemon3 import Daemon
 
 # constants
 DEBUG       = False
